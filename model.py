@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import confusion_matrix
 import joblib
 
 # read train data
@@ -33,6 +34,10 @@ class Classifiers():
         print('Best accuracy score: %s ' % y_pred.best_score_)
         print('Best Hyperparameters: %s' % y_pred.best_params_)
 
+        cm_1 = confusion_matrix(y_test, y_pred)
+        cm_1.plot()
+        plt.show()
+
         joblib.dump(grid_rf.best_estimator_, 'rf_results.pkl', compress=1)
     def svm(self):
         sv = SVC(random_state=2)
@@ -46,6 +51,10 @@ class Classifiers():
         print(metrics.classification_report(y_test, y_pred2))
         print('Best accuracy score: %s ' % y_pred2.best_score_)
         print('Best Hyperparameters: %s' % y_pred2.best_params_)
+
+        cm_2 = confusion_matrix(y_test, y_pred2)
+        cm_2.plot()
+        plt.show()
 
         joblib.dump(grid_sv.best_estimator_, 'sv_results.pkl', compress=1)
     def knn(self):
@@ -61,6 +70,10 @@ class Classifiers():
         print(metrics.classification_report(y_test, y_pred3))
         print('Best accuracy score: %s ' % y_pred3.best_score_)
         print('Best Hyperparameters: %s' % y_pred3.best_params_)
+
+        cm_3 = confusion_matrix(y_test, y_pred3)
+        cm_3.plot()
+        plt.show()
 
         joblib.dump(grid_kn.best_estimator_, 'kn_results.pkl', compress=1)
 def main():
