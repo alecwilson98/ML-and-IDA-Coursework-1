@@ -34,10 +34,6 @@ class Classifiers():
         print('Best accuracy score: %s ' % y_pred.best_score_)
         print('Best Hyperparameters: %s' % y_pred.best_params_)
 
-        cm_1 = confusion_matrix(y_test, y_pred)
-        cm_1.plot()
-        plt.show()
-
         joblib.dump(grid_rf.best_estimator_, 'rf_results.pkl', compress=1)
     def svm(self):
         sv = SVC(random_state=2)
