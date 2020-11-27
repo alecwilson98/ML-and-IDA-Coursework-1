@@ -7,6 +7,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import confusion_matrix
+from sklearn.linear_model import LogisticRegression
 import joblib
 
 # read train data
@@ -35,26 +36,26 @@ class Classifiers():
         print('Best Hyperparameters: %s' % grid_rf_fit.best_params_)
 
         joblib.dump(grid_rf.best_estimator_, 'rf_results.pkl', compress=1)
-    def svm(self):
-        sv = SVC()
-        kernel = ['linear', 'poly', 'rbf', 'sigmoid']
-        C = [100, 10, 1, 0.1, 0.01]
-        hyper_sv = dict(kernel=kernel, C=C)
-        grid_sv = GridSearchCV(sv, hyper_sv, scoring='accuracy', n_jobs=-1)
-        grid_sv_fit = grid_sv.fit(X_train, y_train)
+    def logistic(self):
+        lr = LogisticRegression()
+        max_iter = [100, 1000, 10000]
+        C = [0.1, 1.0, 10, 100]
+        hyper_lr = dict(max_iter=max_iter, C=C)
+        grid_lr = GridSearchCV(lr, hyper_lr, scoring='accuracy', n_jobs=-1)
+        grid_lr_fit = grid_lr.fit(X_train, y_train)
 
-        y_pred2 = grid_sv.predict(X_test)
+        y_pred2 = grid_lr.predict(X_test)
         print(metrics.classification_report(y_test, y_pred2))
-        print('Best accuracy score: %s ' % grid_sv_fit.best_score_)
-        print('Best Hyperparameters: %s' % grid_sv_fit.best_params_)
+        print('Best accuracy score: %s ' % grid_lr_fit.best_score_)
+        print('Best Hyperparameters: %s' % grid_lr_fit.best_params_)
 
-        joblib.dump(grid_sv.best_estimator_, 'sv_results.pkl', compress=1)
+        joblib.dump(grid_lr.best_estimator_, 'lr_results.pkl', compress=1)
     def knn(self):
         kn = KNeighborsClassifier()
-        n_neighbors = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
-        weights = ['uniform', 'distance']
-        metric = ['euclidean', 'manhattan', 'minkowski']
-        hyper_kn = dict(n_neighbors=n_neighbors, weights=weights, metric=metric)
+        n_neighbors = [1, 3, 5, 7, 9, 11]
+        weights = ['uniform']
+        algorithm = ['ball_tree', 'kd_tree']
+        hyper_kn = dict(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm)
         grid_kn = GridSearchCV(kn, hyper_kn, scoring='accuracy', n_jobs=-1)
         grid_kn_fit = grid_kn.fit(X_train, y_train)
 
@@ -66,8 +67,8 @@ class Classifiers():
         joblib.dump(grid_kn.best_estimator_, 'kn_results.pkl', compress=1)
 def main():
     cl = Classifiers()
-    cl.rfc()
-    cl.svm()
+    #cl.rfc()
+    cl.logistic()
     cl.knn()
 
 if __name__ == "__main__":
